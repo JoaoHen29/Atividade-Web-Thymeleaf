@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Portfólio | ' + ${nome}">Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css">
+</head>
+<body>
+
+<!-- ===== Cabeçalho / Menu ===== -->
+<header class="cabecalho">
+    <nav class="nav container">
+        <a href="#inicio" class="logo">JH<span>.</span></a>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#inicio" class="ativo">Início</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#habilidades">Habilidades</a></li>
+            <li><a href="#projetos">Projetos</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+
+        <div class="nav-acoes">
+            <button class="btn-icone" id="btnTema" title="Alternar tema claro/escuro" aria-label="Alternar tema">🌙</button>
+            <button class="btn-icone menu-mobile" id="btnMenu" aria-label="Abrir menu">☰</button>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <!-- ===== Início ===== -->
+    <section id="inicio" class="hero">
+        <div class="container hero-conteudo">
+            <div class="hero-texto">
+                <p class="saudacao">Olá, eu sou</p>
+                <h1 th:text="${nome}">Nome do aluno</h1>
+                <p class="subtitulo" th:text="${titulo}">Título</p>
+
+                <div class="hero-botoes">
+                    <a href="#projetos" class="btn btn-primario">Ver projetos</a>
+                    <a href="#contato" class="btn btn-secundario">Fale comigo</a>
+                </div>
+
+                <!-- Números calculados a partir das listas enviadas pelo Controller -->
+                <div class="hero-numeros">
+                    <div>
+                        <strong th:text="${#lists.size(projetos)}">0</strong>
+                        <span>Projetos</span>
+                    </div>
+                    <div>
+                        <strong th:text="${#lists.size(habilidades)}">0</strong>
+                        <span>Áreas de estudo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-avatar" aria-hidden="true">
+                <div class="avatar">JH</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Sobre ===== -->
+    <section id="sobre" class="secao">
+        <div class="container">
+            <h2 class="titulo-secao">Sobre mim</h2>
+            <div class="sobre-grid">
+                <p class="sobre-texto" th:text="${sobre}">Texto sobre o aluno.</p>
+
+                <div class="sobre-cards">
+                    <div class="card-info">
+                        <span class="card-icone">🎓</span>
+                        <div>
+                            <h3>Curso</h3>
+                            <p th:text="${curso}">Curso</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <span class="card-icone">🏫</span>
+                        <div>
+                            <h3>Universidade</h3>
+                            <p th:text="${universidade}">Universidade</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Habilidades ===== -->
+    <section id="habilidades" class="secao secao-alternada">
+        <div class="container">
+            <h2 class="titulo-secao">Habilidades</h2>
+            <div class="habilidades-grid">
+                <!-- th:each percorre a lista de habilidades enviada pelo Controller -->
+                <div class="card-habilidade" th:each="habilidade : ${habilidades}">
+                    <h3 th:text="${habilidade.categoria}">Categoria</h3>
+                    <ul class="tags">
+                        <li class="tag" th:each="item : ${habilidade.itens}" th:text="${item}">Item</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Projetos ===== -->
+    <section id="projetos" class="secao">
+        <div class="container">
+            <h2 class="titulo-secao">Projetos</h2>
+
+            <!-- Filtro feito com JavaScript -->
+            <div class="filtros">
+                <button class="filtro ativo" data-filtro="todos">Todos</button>
+                <button class="filtro" data-filtro="Java">Java</button>
+                <button class="filtro" data-filtro="Web">Web</button>
+                <button class="filtro" data-filtro="Front-end">Front-end</button>
+            </div>
+
+            <div class="projetos-grid">
+                <article class="card-projeto" th:each="projeto : ${projetos}"
+                         th:attr="data-categoria=${projeto.categoria}">
+                    <span class="categoria" th:text="${projeto.categoria}">Categoria</span>
+                    <h3 th:text="${projeto.titulo}">Título do projeto</h3>
+                    <p th:text="${projeto.descricao}">Descrição do projeto.</p>
+
+                    <ul class="tags">
+                        <li class="tag" th:each="tec : ${projeto.tecnologias}" th:text="${tec}">Tecnologia</li>
+                    </ul>
+
+                    <!-- Só mostra o link se o projeto tiver um -->
+                    <a th:if="${projeto.link != null}" th:href="${projeto.link}"
+                       class="link-projeto" target="_blank" rel="noopener">Ver no GitHub →</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Contato ===== -->
+    <section id="contato" class="secao secao-alternada">
+        <div class="container contato-grid">
+            <div>
+                <h2 class="titulo-secao">Contato</h2>
+                <p>Quer trocar uma ideia sobre algum projeto? Mande uma mensagem pelo formulário ou por e-mail.</p>
+                <a class="email" th:href="'mailto:' + ${email}" th:text="${email}">email@exemplo.com</a>
+            </div>
+
+            <!-- O formulário envia os dados para a rota POST /contato do Controller -->
+            <form class="form-contato" th:action="@{/contato}" method="post" id="formContato">
+                <div class="alerta-sucesso" th:if="${mensagemSucesso}" th:text="${mensagemSucesso}">Mensagem enviada!</div>
+
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+
+                <label for="mensagem">Mensagem</label>
+                <textarea id="mensagem" name="mensagem" rows="4" maxlength="500" placeholder="Escreva sua mensagem..." required></textarea>
+                <small class="contador"><span id="contador">0</span>/500 caracteres</small>
+
+                <button type="submit" class="btn btn-primario">Enviar mensagem</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="rodape">
+    <p>&copy; <span th:text="${anoAtual}">2026</span> <span th:text="${nome}">Nome</span> · Feito com Spring Boot e Thymeleaf</p>
+</footer>
+
+<button class="voltar-topo" id="voltarTopo" aria-label="Voltar ao topo">↑</button>
+
+<script th:src="@{/js/script.js}" src="../static/js/script.js"></script>
+</body>
+</html>
